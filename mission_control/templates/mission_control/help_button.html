@@ -1,0 +1,4 @@
+{# App bar: open the help section for the screen being shown. #}
+{% set target = (help_for | default({})).get(nav) %}
+<a class="icon-button" href="/help{{ '/' ~ target if target }}" title="Help for this page" aria-label="Help for this page">
+  <span class="material-symbols-outlined">help</span></a>

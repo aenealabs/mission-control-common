@@ -1,0 +1,29 @@
+{# Mission Control launcher: the app name in the app bar opens a list of every suite app. #}
+{% set here = suite_apps | selectattr('current') | first %}
+{% if suite_apps | length > 1 %}
+<details class="suite-menu">
+  <summary title="Switch app">
+    <span class="material-symbols-outlined">{{ here.icon }}</span>
+    <div>
+      <div class="suite">{{ suite_name }} <span class="material-symbols-outlined chevron">expand_more</span></div>
+      <div class="title">{{ here.name }}</div>
+    </div>
+  </summary>
+  <div class="suite-menu-panel" role="menu" aria-label="{{ suite_name }} apps">
+    <div class="overline">{{ suite_name }}</div>
+    {% for a in suite_apps %}
+    <a class="suite-app {{ 'current' if a.current }}" href="{{ a.url }}" role="menuitem" {{ 'aria-current=page' if a.current }}>
+      <span class="material-symbols-outlined">{{ a.icon }}</span>
+      <span class="suite-app-text"><span class="name">{{ a.name }}</span>{% if a.purpose %}<span class="purpose">{{ a.purpose }}</span>{% endif %}</span>
+      {% if a.current %}<span class="here">Current</span>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</details>
+{% else %}
+<span class="material-symbols-outlined">{{ here.icon }}</span>
+<div>
+  <div class="suite">{{ suite_name }}</div>
+  <div class="title">{{ here.name }}</div>
+</div>
+{% endif %}

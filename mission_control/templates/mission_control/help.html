@@ -1,0 +1,41 @@
+{# Help pages: the app's guide, its generated reference, and the shared suite guide. #}
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header"><h1>Help</h1><span class="muted">How {{ (suite_apps | selectattr('current') | first).name }} works, and how it fits into {{ suite_name }}</span></div>
+<div class="help-layout">
+  <nav class="card help-nav" aria-label="Help pages">
+    <div class="overline">This app</div>
+    {% for p in help_pages %}<a href="/help/{{ p.slug }}" class="{{ 'current' if page and page.slug == p.slug }}" {{ 'aria-current=page' if page and page.slug == p.slug }}>{{ p.title }}</a>{% endfor %}
+    {% if help_has_reference %}<a href="/help/reference" class="{{ 'current' if reference }}" {{ 'aria-current=page' if reference }}>Rules and settings reference</a>{% endif %}
+    <div class="overline">{{ suite_name }}</div>
+    <a href="/help/mission-control" class="{{ 'current' if suite_guide }}" {{ 'aria-current=page' if suite_guide }}>How {{ suite_name }} works</a>
+  </nav>
+  <article class="card help-body">
+    {% if reference %}
+      <h1>Rules and settings reference</h1>
+      <p class="lead">Generated from the code that runs the rules, so it always matches what this app does.</p>
+      <div class="help-toc">{% for s in reference %}<a href="#{{ s.anchor }}">{{ s.title }}</a>{% endfor %}</div>
+      {% for s in reference %}
+        <h2 id="{{ s.anchor }}">{{ s.title }}</h2>
+        {% if s.intro %}<p>{{ s.intro }}</p>{% endif %}
+        <table><thead><tr>{% for c in s.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+          <tbody>{% for r in s.rows %}<tr>{% for v in r %}<td>{% if loop.first %}<strong>{{ v }}</strong>{% else %}{{ v }}{% endif %}</td>{% endfor %}</tr>{% endfor %}</tbody></table>
+      {% endfor %}
+    {% else %}
+      <h1>{{ page.title }}</h1>
+      {% if page.sections | length > 2 %}<div class="help-toc">{% for anchor, heading in page.sections %}<a href="#{{ anchor }}">{{ heading }}</a>{% endfor %}</div>{% endif %}
+      {% if suite_guide %}
+        {{ page.intro }}
+        <h2 id="the-apps">The apps</h2>
+        <table><thead><tr><th>App</th><th>What it does</th><th>Here</th></tr></thead><tbody>
+        {% for a in suite_apps %}<tr><td><span class="material-symbols-outlined help-icon">{{ a.icon }}</span> {% if a.current %}<strong>{{ a.name }}</strong>{% else %}<a href="{{ a.url }}/help">{{ a.name }}</a>{% endif %}</td><td>{{ a.purpose }}</td><td>{{ 'this app' if a.current else 'connected' }}</td></tr>{% endfor %}
+        </tbody></table>
+        {% if suite_apps | length == 1 %}<p class="muted">This app is running on its own. Set <code>MISSION_CONTROL_APPS</code> to list the other apps here and in the app menu.</p>{% endif %}
+        {{ page.body }}
+      {% else %}
+        {{ page.html }}
+      {% endif %}
+    {% endif %}
+  </article>
+</div>
+{% endblock %}

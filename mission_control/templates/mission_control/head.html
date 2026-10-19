@@ -1,0 +1,7 @@
+{# Shared <head> tags: fonts, the suite's base styles, and theme/menu behavior. The version
+   query string makes browsers fetch the new files after the package is upgraded. #}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<link rel="stylesheet" href="{{ url_for('suite_static', path='suite.css') }}?v={{ suite_version }}">
+<script src="{{ url_for('suite_static', path='suite.js') }}?v={{ suite_version }}"></script>
